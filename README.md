@@ -2,9 +2,6 @@
 ```bash
 IRSymbolyzer
 ├── CMakeLists.txt
-├── cmake/                  # Custom cmake scripts if needed
-│   └── FindLLVM.cmake
-├── external/               # Third-party dependencies (optional)
 ├── include/                # Public headers (exposed interfaces)
 │   ├── addr2ir/
 │   │   └── Addr2IR.h
@@ -35,11 +32,13 @@ IRSymbolyzer
 ```
 
 # Requirements
-**LLVM build**:
+## LLVM
 Build of LLVM, needs to have `LLVM_INSTALL_UTILS` flag. Ninja bellow but could be any generator (Make etc.)
 
 ref: https://llvm.org/docs/CMake.html#embedding-llvm-in-your-project
 
+
+**LLVM build commands example:**
 ```bash
 $ git clone https://github.com/llvm/llvm-project.git
 $ cd llvm-project
