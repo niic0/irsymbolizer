@@ -6,31 +6,36 @@
 
 int main(int argc, char* argv[]) {
   llvm::InitLLVM X(argc, argv);
+
   if(parseAndValidateCommandLine(argc, argv) == false)
     return 1;
   
   // CLI logic handler
-  if (Sample) { // TODO
-    std::cout << "Sampling binary: " << Binary << " at " << Frequency << " Hz\n";
+  if (SampleFlag) { // TODO
+    llvm::outs() << "Sampling binary: " << BinPath << " at " << Freq << " Hz\n";
     if (!OutputSamples.empty()) {
       // TODO
-      std::cout << "Saving samples to: " << OutputSamples << "\n";
+      llvm::outs() << "Saving samples to: " << OutputSamples << "\n";
     }
   }
 
-  if (Addr2IR) {
+  if (Addr2IRFlag) {
     // TODO
-    std::cout << "Mapping address " << Address << " to IR for binary: " << Binary << "\n";
-    if (!OutputIR.empty()) {
+    llvm::outs() << "Mapping address " << Address << " to IR for binary: " << BinPath << "\n";
+    if (!OutputAddr2IR.empty()) {
       // TODO
-      std::cout << "Saving IR result to: " << OutputIR << "\n";
+      llvm::outs() << "Saving IR result to: " << OutputAddr2IR << "\n";
     }
   }
 
-  if (Addr2Line) {
-    std::cout << "Mapping address " << Address << " to source for binary: " << Binary << "\n";
+  if (Addr2LineFlag) {
+    llvm::outs() << "Mapping address " << Address << " to source for binary: " << BinPath << "\n";
 
-    llvm::Expected<llvm::DILineInfo> lineInfoRes = symbolizeCodeWrapper(Module, PC_addr);
+    // Format the address in int
+    uint64_t intAddress = 0;
+    llvm::StringRef(Address).getAsInteger(0, intAddress);
+
+    llvm::Expected<llvm::DILineInfo> lineInfoRes = symbolizeCodeWrapper(BinPath, intAddress);
     if (!lineInfoRes) {
       llvm::logAllUnhandledErrors(lineInfoRes.takeError(), llvm::errs(), "symbolize error: ");
       return 1;
@@ -46,8 +51,8 @@ int main(int argc, char* argv[]) {
     }
 
     // TODO
-    if (!OutputLine.empty()) {
-      std::cout << "Saving source result to: " << OutputLine << "\n";
+    if (!OutputAddr2Line.empty()) {
+      llvm::outs() << "Saving source result to: " << OutputAddr2Line << "\n";
     }
   }
 

@@ -15,8 +15,8 @@ cl::opt<bool> Addr2LineFlag("addr2line", cl::desc("Map address(es) to source lin
 cl::opt<bool> Addr2IRFlag("addr2ir",     cl::desc("Map address(es) to LLVM IR"),               llvm::cl::cat(IRSymbolizerCategory));
 
 // Parameters
-cl::opt<std::string> BinPath("bin",   cl::desc("Input binary"),            cl::value_desc("filename"),    llvm::cl::cat(IRSymbolizerCategory));
-cl::opt<std::string> Address("addr", cl::desc("Input address"),           cl::value_desc("hex address"), llvm::cl::cat(IRSymbolizerCategory));
+cl::opt<std::string> BinPath("bin",   cl::desc("Input binary"),           cl::value_desc("filename"),    llvm::cl::cat(IRSymbolizerCategory));
+cl::opt<std::string> Address("addr", cl::desc("Input address in Hexa"),   cl::value_desc("hex address"), llvm::cl::cat(IRSymbolizerCategory));
 cl::opt<unsigned>    Freq("freq",    cl::desc("Sampling frequency (Hz)"), cl::init(200),                 llvm::cl::cat(IRSymbolizerCategory));
 
 // Outputs
@@ -27,6 +27,7 @@ cl::opt<std::string> OutputSamples("output-samples",     cl::desc("Output sampli
 bool parseAndValidateCommandLine(int argc, char **argv) {
   // Hide the LLVM default arguments from the --help
   llvm::cl::HideUnrelatedOptions(IRSymbolizerCategory);
+
   cl::ParseCommandLineOptions(argc, argv,
 			      "IRSymbolizer\n"
 			      "A CLI tool for sampling and mapping addresses to source or IR\n\n"
@@ -42,22 +43,29 @@ bool parseAndValidateCommandLine(int argc, char **argv) {
     return false;
   }
 
-  if ((OutputAddr2Line.getNumOccurrences() && Addr2Line) ||
-      (OutputAddr2IR.getNumOccurrences() && Addr2IR) ||
-      (OutputSamples.getNumOccurrences() && Sample)) {
+  if ((OutputAddr2Line.getNumOccurrences() && Addr2LineFlag) ||
+      (OutputAddr2IR.getNumOccurrences() && Addr2IRFlag) ||
+      (OutputSamples.getNumOccurrences() && SampleFlag)) {
     WithColor::error() << "Output flag cannot be used with the respective active command.\n";
     cl::PrintHelpMessage();
     return false;
   }
 
-  if ((Addr2Line || Addr2IR) && (Bin.empty() || (Addr.empty() && SampleAddrFile.empty()))) {
+  if ((Addr2LineFlag || Addr2IRFlag) && (BinPath.empty() || Address.empty())) {
     WithColor::error() << "--addr2line or --addr2ir requires --bin and --addr.\n";
     cl::PrintHelpMessage();
     return false;
   }
 
-  if (Sample && Bin.empty()) {
+  if (SampleFlag && BinPath.empty()) {
     WithColor::error() << "--sample requires --bin argument.\n";
+    cl::PrintHelpMessage();
+    return false;
+  }
+
+  uint64_t intAddr = 0;
+  if ((Addr2IRFlag || Addr2LineFlag) && llvm::StringRef(Address).getAsInteger(0, intAddr)) {
+    WithColor::error() << "Invalid hex address: " << Address << "\n";
     cl::PrintHelpMessage();
     return false;
   }

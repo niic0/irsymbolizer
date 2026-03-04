@@ -9,7 +9,7 @@ target_include_directories(addr2ir
 
 target_link_libraries(addr2ir
   PRIVATE
-    LLVMObject
-    LLVMSymbolize
-    LLVMDebugInfoDWARF
+  LLVMObject
+  LLVMSymbolize
+  LLVMDebugInfoDWARF
 )
