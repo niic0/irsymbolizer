@@ -15,6 +15,7 @@ add_definitions(${LLVM_DEFINITIONS_LIST})
 
 llvm_map_components_to_libnames(llvm_libs
   Support
+  Option
   DebugInfoDWARF
   Symbolize
   Object
@@ -23,9 +24,16 @@ llvm_map_components_to_libnames(llvm_libs
 add_subdirectory(src/addr2ir)
 add_subdirectory(src/sampler)
 add_subdirectory(src/visualizer)
+add_subdirectory(src/cli)
 
 add_executable(IRSymbolizer src/main.cpp)
-target_link_libraries(IRSymbolizer PRIVATE addr2ir)
+target_link_libraries(IRSymbolizer PRIVATE addr2ir cli)
 
-#enable_testing()
-#add_subdirectory(tests)
+enable_testing()
+
+# Custom test script for each binary
+add_test(NAME RunSymbolizerTest
+         COMMAND ${CMAKE_SOURCE_DIR}/test/symbolizeCodeWrapper/run_symbolizer_test.sh
+         $<TARGET_FILE:IRSymbolizer>
+         ${CMAKE_SOURCE_DIR}/test/inputs
+         ${CMAKE_SOURCE_DIR}/test/expected)

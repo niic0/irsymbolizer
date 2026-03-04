@@ -2,4 +2,4 @@
 
 #include "llvm/DebugInfo/DIContext.h" // DILineInfo type
 
-DILineInfo symbolyzeCodeWrapper(const std::string &ModuleName, uint64_t PC_addr);
+llvm::Expected<llvm::DILineInfo> symbolizeCodeWrapper(const std::string &ModuleName, uint64_t PC_addr);

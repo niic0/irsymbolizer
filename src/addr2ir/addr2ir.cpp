@@ -22,16 +22,15 @@
 //      -> Goal is: IR BB {unrolled, vectorized, etc...}
 
 using namespace llvm;
-using namespace addr2ir;
 
-DILineInfo symbolizeCodeWrapper(const std::string &ModuleName, uint64_t PC_addr) {
+Expected<DILineInfo> symbolizeCodeWrapper(const std::string &ModuleName, uint64_t PC_addr) {
   DILineInfo LineInfo;
   symbolize::LLVMSymbolizer::Options opts;
   symbolize::LLVMSymbolizer symbolizer(opts);
 
   object::SectionedAddress addr {PC_addr, object::SectionedAddress::UndefSection};
 
-  Expected<DILineInfo> lineInfo = symbolizer.symbolizeCode(Module, addr);
+  Expected<DILineInfo> lineInfo = symbolizer.symbolizeCode(ModuleName, addr);
 
   return lineInfo;
 }
