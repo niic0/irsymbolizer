@@ -1,25 +1,25 @@
 #!/bin/bash
 
-set -e
+# Skip 1 line (header)
+skip_header=1
+csv_file_line=0
 
-SYMBOLIZER=$1
-INPUT_DIR=$2
-EXPECTED_DIR=$3
+# For each line in the csv
+while IFS="," read -r module addr function file line label
+do
+    ((csv_file_line++))
+    
+    if [[ -z  $module || -z $addr || -z $function || -z $file || -z $line || -z $label ]]; then
+       echo -e "\e[1m[TEST ERROR] One or more variables are undefined at line $csv_file_line"
+       exit 1
+    fi
 
-for BIN in "$INPUT_DIR"/*; do
-    BIN_NAME=$(basename "$BIN")
-    echo "Testing $BIN_NAME..."
-
-    # Obtain addresses from binary
-    OUTPUT=$(mktemp)
-    for addr in $(objdump -d "$BIN" | awk '/^[[:xdigit:]]+:/ { print $1 }'); do
-        $SYMBOLIZER --bin "$BIN" --addr "$addr" >> "$OUTPUT"
-    done
-
-    diff -u "$EXPECTED_DIR/$BIN_NAME.out" "$OUTPUT" || {
-        echo "Mismatch for $BIN_NAME"
-        exit 1
-    }
-    echo "✔ Passed $BIN_NAME"
-    rm "$OUTPUT"
-done
+    if ((skip_header)); then
+	((skip_header--))
+    else
+	echo "$module | $addr | $function | $file | $line | $label"
+	# Run ./IRSymbolizer --addr2line --addr <addr> --bin <binfile>
+	# Compare output of the previous run with the 3 last elements of the csv
+	# if good -> output good, if not -> not good
+    fi
+done < test_cases.csv

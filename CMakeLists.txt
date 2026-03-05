@@ -5,6 +5,9 @@ project(IRSymbolizer)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Set -O3 for RelWithDebInfo
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g" CACHE STRING "" FORCE)
+
 # Locate LLVM
 find_package(LLVM REQUIRED CONFIG)
 
@@ -27,6 +30,8 @@ add_subdirectory(src/visualizer)
 add_subdirectory(src/cli)
 
 add_executable(IRSymbolizer src/main.cpp)
+
+# Prefix linker-only flags
 target_link_libraries(IRSymbolizer PRIVATE addr2ir cli)
 
 enable_testing()

@@ -6,11 +6,11 @@
 extern llvm::cl::opt<std::string> BinPath;
 extern llvm::cl::opt<std::string> Address;
 
+extern llvm::cl::opt<unsigned> Freq;
+
 extern llvm::cl::opt<bool> SampleFlag;
 extern llvm::cl::opt<bool> Addr2LineFlag;
 extern llvm::cl::opt<bool> Addr2IRFlag;
-
-extern llvm::cl::opt<int> Freq;
 
 extern llvm::cl::opt<std::string> OutputAddr2Line;
 extern llvm::cl::opt<std::string> OutputAddr2IR;

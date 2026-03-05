@@ -1,0 +1,3 @@
+binary,addr,function,file,line,label
+base_O0,0x401000,main,test.c,5,Inlining
+base_O2,0x402034,main,test.c,5,Unrolling
