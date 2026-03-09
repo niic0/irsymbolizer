@@ -11,6 +11,7 @@ int main(int argc, char* argv[]) {
     return 1;
   
   // CLI logic handler
+  // Sampling mode
   if (SampleFlag) { // TODO
     llvm::outs() << "Sampling binary: " << BinPath << " at " << Freq << " Hz\n";
     if (!OutputSamples.empty()) {
@@ -19,11 +20,13 @@ int main(int argc, char* argv[]) {
     }
   }
 
+
+  // Address to IR mode
   if (Addr2IRFlag) {
-    // TODO
-    llvm::outs() << "Mapping address " << Address << " to IR for binary: " << BinPath << "\n";
+    llvm::outs() << "Mapping address " << Address << " to IR for binary " << BinPath << " with the LLVM IR " <<  "\n";
+
     if (!OutputAddr2IR.empty()) {
-      // TODO
+
       llvm::outs() << "Saving IR result to: " << OutputAddr2IR << "\n";
     }
   }

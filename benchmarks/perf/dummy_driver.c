@@ -4,14 +4,15 @@
 int main(int argc, char* argv[]) {
     if(argc != 2) {
         printf("Usage: %s <size>\n", argv[0]);
-        printf("- size: vectors sizes\n");
+        printf("- size: vector size\n");
         return 0;
     }
 
     int size = atoi(argv[1]);
 
     printf("- Start\n");
-    printf("N = %d\n\n", size);
+
+    printf("Malloc 3 * sizeof(double) * %d...\n", size);
 
     double *x = (double *)malloc(sizeof(double) * size);
     double *y = (double *)malloc(sizeof(double) * size);
@@ -35,12 +36,17 @@ int main(int argc, char* argv[]) {
             y[j] += x[j] * x[i];
             for (int k = 0; k<size; k++) {
                 z[k] += x[k] * y[i] * z[j];
-            }
-        }
+	    }
+	}
     }
 
     printf("Free...\n");
 
+    free(x);
+    free(y);
+    free(z);
+
     printf("- Ended\n");
+
     return 0;
 }
