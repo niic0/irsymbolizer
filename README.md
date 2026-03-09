@@ -53,30 +53,15 @@ $ ninja -C <build_path> install
 ```bash
 IRSymbolyzer
 ├── CMakeLists.txt
+├── artifacts/              # Perf output, not versionned
+│   └── perf/
+├── benchmarks/             # Performance experiements, outputs in 
+│                           # benchmarks/perf directory
+├── data/                   # Inputs for test purpose
 ├── include/                # Public headers (exposed interfaces)
-│   ├── addr2ir/
-│   │   └── Addr2IR.h
-│   ├── sampler/
-│   │   └── Sampler.h
-│   └── visualizer/
-│       └── Visualizer.h
 ├── src/                    # Implementation
-│   ├── addr2ir/
-│   │   └── Addr2IR.cpp
-│   ├── sampler/
-│   │   └── Sampler.cpp
-│   ├── visualizer/
-│   │   └── Visualizer.cpp
-│   └── main.cpp            # Main entry point (optional tool or CLI)
-├── tools/                  # Standalone CLI tools or demos (TODO)
-│   ├── run_sampler.cpp
-│   └── addr2ir_inspect.cpp
-├── data/                   # Test inputs: binaries, .so/.a, fixtures
-│   └── gcc7_binary, clang16_binary, stripped_binary, etc.
+├── data/                   # Test inputs: binaries, .so/.a ...
 ├── tests/                  # Unit and integration tests (TODO)
-│   ├── test_addr2ir.cpp
-│   ├── test_sampler.cpp
-│   └── test_ir_symbolizer.cpp
 ├── scripts/                # Helper scripts (build, benchmark, analysis)
 │   └── build.sh
 └── README.md

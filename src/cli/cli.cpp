@@ -16,6 +16,7 @@ cl::opt<bool> Addr2IRFlag("addr2ir",     cl::desc("Map address(es) to LLVM IR"),
 
 // Parameters
 cl::opt<std::string> BinPath("bin",   cl::desc("Input binary"),           cl::value_desc("filename"),    llvm::cl::cat(IRSymbolizerCategory));
+cl::opt<std::string> IrllvmPath("ir",   cl::desc("Input IR LLVM"),           cl::value_desc("filename"),    llvm::cl::cat(IRSymbolizerCategory));
 cl::opt<std::string> Address("addr", cl::desc("Input address in Hexa"),   cl::value_desc("hex address"), llvm::cl::cat(IRSymbolizerCategory));
 cl::opt<unsigned>    Freq("freq",    cl::desc("Sampling frequency (Hz)"), cl::init(200),                 llvm::cl::cat(IRSymbolizerCategory));
 
@@ -34,7 +35,7 @@ bool parseAndValidateCommandLine(int argc, char **argv) {
 			      "Examples:\n"
 			      "  IRSymbolizer --bin bin\n"
 			      "  IRSymbolizer --addr2line --bin ./binfile --addr 0xaddress\n"
-			      "  IRSymbolizer --addr2ir --bin ./binfile --addr 0xaddress\n"
+			      "  IRSymbolizer --addr2ir --bin ./binfile --addr 0xaddress --ir output.ll\n"
 			      "  IRSymbolizer --sample --bin ./binfile --freq 1000\n"
 			      );
 
@@ -51,8 +52,14 @@ bool parseAndValidateCommandLine(int argc, char **argv) {
     return false;
   }
 
-  if ((Addr2LineFlag || Addr2IRFlag) && (BinPath.empty() || Address.empty())) {
-    WithColor::error() << "--addr2line or --addr2ir requires --bin and --addr.\n";
+  if (Addr2LineFlag && (BinPath.empty() || Address.empty())) {
+    WithColor::error() << "--addr2line requires --bin and --addr.\n";
+    cl::PrintHelpMessage();
+    return false;
+  }
+
+  if (Addr2IRFlag && (BinPath.empty() || Address.empty() || IrllvmPath.empty())) {
+    WithColor::error() << "--addr2ir requires --bin, --addr and --ir.\n";
     cl::PrintHelpMessage();
     return false;
   }

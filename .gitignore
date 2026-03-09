@@ -3,3 +3,5 @@ Build/
 build-*/
 external/
 *.out
+artifacts/
+*.data
