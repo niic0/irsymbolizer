@@ -63,6 +63,9 @@ The text-based UI depends on [FTXUI](https://github.com/ArthurSonzogni/FTXUI) an
 
 If `IRSYMBOLIZER_ENABLE_TUI` is not set, the TUI target is skipped entirely and no FTXUI sources are required.
 
+## Tree-sitter vendored sources
+Tree-sitter (runtime plus grammars) is the only dependency committed under `external/` because each language requires generated `src/parser.c` / `src/scanner.*` files. Keeping those checked in removes the need for every developer or CI job to install Node.js and regenerate parsers, ensuring deterministic syntax highlighting builds for the TUI.
+
 # Structure
 ```bash
 IRSymbolyzer
@@ -80,4 +83,3 @@ IRSymbolyzer
 │   └── build.sh
 └── README.md
 ```
-

@@ -1,7 +1,9 @@
 build/
 Build/
 build-*/
-external/
+external/*
+!external/tree-sitter/
+!external/tree-sitter-*/
 *.out
 artifacts/
 *.data
