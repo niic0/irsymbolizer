@@ -1,13 +1,13 @@
 add_library(addr2ir STATIC
-  addr2ir.cpp
+  samples2ir.cpp
 )
 
-target_include_directories(addr2ir
+target_include_directories(samples2ir
   PUBLIC
   ${PROJECT_SOURCE_DIR}/include
 )
 
-target_link_libraries(addr2ir
+target_link_libraries(samples2ir
   PRIVATE
   LLVMObject
   LLVMSymbolize

@@ -5,6 +5,9 @@ project(IRSymbolizer)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Optional components.
+option(IRSYMBOLIZER_ENABLE_TUI "Build the optional text UI (requires FTXUI)" OFF)
+
 # Set -O3 for RelWithDebInfo
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g" CACHE STRING "" FORCE)
 
@@ -24,15 +27,30 @@ llvm_map_components_to_libnames(llvm_libs
   Object
 )
 
+# Source locations
 add_subdirectory(src/addr2ir)
 add_subdirectory(src/sampler)
 add_subdirectory(src/visualizer)
 add_subdirectory(src/cli)
 
+if(IRSYMBOLIZER_ENABLE_TUI)
+  if(NOT EXISTS ${CMAKE_SOURCE_DIR}/external/FTXUI/CMakeLists.txt)
+    message(FATAL_ERROR
+      "IRSYMBOLIZER_ENABLE_TUI=ON but external/FTXUI was not found. "
+      "Clone FTXUI into external/FTXUI before enabling the TUI.")
+  endif()
+  add_subdirectory(external/FTXUI EXCLUDE_FROM_ALL)
+  add_subdirectory(src/tui)
+endif()
+
+# Executable name
 add_executable(IRSymbolizer src/main.cpp)
 
 # Prefix linker-only flags
 target_link_libraries(IRSymbolizer PRIVATE addr2ir cli)
+if(IRSYMBOLIZER_ENABLE_TUI)
+  target_link_libraries(IRSymbolizer PRIVATE tui)
+endif()
 
 enable_testing()
 
